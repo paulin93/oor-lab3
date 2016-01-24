@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Licz numer: <output id="result"></output></p>
+<button onclick="startWorker()">Start</button> 
+<button onclick="stopWorker()">Stop</button>
+<br><br>
+
+<script>
+var w;
+var i=5000;
+function startWorker() {
+    if(typeof(Worker) !== "undefined") {
+        if(typeof(w) == "undefined") {
+            w = new Worker("workers.js");
+			w.postMessage(i);
+			w.postMessage("start");
+        }
+        w.onmessage = function(event) {
+			i = event.data;
+            document.getElementById("result").innerHTML = event.data;
+        };
+    } else {
+        document.getElementById("result").innerHTML = "Sorry! No Web Worker support.";
+    }
+}
+
+function stopWorker() { 
+    w.terminate();
+    w = undefined;
+}
+</script>
+
+</body>
+</html>
